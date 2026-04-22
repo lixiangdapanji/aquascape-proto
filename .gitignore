@@ -1,0 +1,13 @@
+# Generated code should never live in this repo.
+gen/
+*.pb.go
+*_pb2.py
+*_pb2_grpc.py
+*.pb.rs
+*.pb.ts
+
+# Editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
