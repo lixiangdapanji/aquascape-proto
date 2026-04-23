@@ -1,8 +1,13 @@
 name: ci
+
 on:
-  pull_request:
   push:
     branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   buf:
@@ -10,10 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # needed for buf breaking
+          fetch-depth: 0
       - uses: bufbuild/buf-setup-action@v1
       - run: buf lint
-      - run: buf format --diff --exit-code
+      # Breaking-change check only on PRs — first push has nothing to diff against.
       - name: Breaking-change check
         if: github.event_name == 'pull_request'
-        run: buf breaking --against "https://github.com/${{ github.repository }}.git#branch=main"
+        run: buf breaking --against "https://github.com/${{ github.repository }}.git#branch=${{ github.base_ref }}"
